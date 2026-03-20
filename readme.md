@@ -1,3 +1,20 @@
+## 🐛 Bugs Found
+
+### Bug 1: Wrong Total Price
+- **Where:** `POST /orders`
+- **Problem:** `total_price = (price * quantity) - 5` มีการลบ 5 ผิดพลาด
+- **Test detects it:** Request 03 asserts totalPrice == 50, but gets 45
+
+### Bug 2: Wrong Status for Missing Order  
+- **Where:** `GET /orders/<id>`
+- **Problem:** ส่ง 200 OK แม้ order ไม่มีอยู่ ควรส่ง 404
+- **Test detects it:** Request 05 asserts status == 404, but gets 200
+
+### Bug 3: No Stock Quantity Check
+- **Where:** `POST /orders`
+- **Problem:** ไม่เช็คว่า quantity > stock ทำให้ stock ติดลบได้
+- **Test detects it:** Request 06 orders qty=999 but gets 200 instead of 400
+
 # 🍜 API Testing Lab: Auntie Som’s Noodle Stall
 
 > **Objective:** Prove that Nephew Lek’s "it works on my machine" attitude is a recipe for disaster.
