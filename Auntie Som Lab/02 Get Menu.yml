@@ -1,0 +1,35 @@
+info:
+  name: 02 Get Menu
+  type: http
+  seq: 3
+
+http:
+  method: GET
+  url: "{{baseUrl}}/menu"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        // Test: status 200
+        expect(res.status).to.equal(200);
+
+        // Test: ต้องได้ array
+        expect(res.body).to.be.an("array");
+
+        // Test: ต้องมีอย่างน้อย 1 item
+        expect(res.body.length).to.be.greaterThan(0);
+
+        // Test: แต่ละ item ต้องมี field ครบ
+        res.body.forEach(item => {
+          expect(item).to.have.property("id");
+          expect(item).to.have.property("price");
+          expect(item).to.have.property("stock");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

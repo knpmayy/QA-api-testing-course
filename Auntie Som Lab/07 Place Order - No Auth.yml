@@ -1,0 +1,29 @@
+info:
+  name: 07 Place Order - No Auth
+  type: http
+  seq: 9
+
+http:
+  method: POST
+  url: "{{baseUrl}}/orders"
+  body:
+    type: json
+    data: |-
+      {
+        "itemId": 1,
+        "quantity": 1
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        // Test: ต้องได้ 401
+        expect(res.status).to.equal(401);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

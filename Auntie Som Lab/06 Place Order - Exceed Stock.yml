@@ -1,0 +1,33 @@
+info:
+  name: 06 Place Order - Exceed Stock
+  type: http
+  seq: 8
+
+http:
+  method: POST
+  url: "{{baseUrl}}/orders"
+  headers:
+    - name: Authorization
+      value: Bearer {{accessToken}}
+  body:
+    type: json
+    data: |-
+      {
+        "itemId": 2,
+        "quantity": 999
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        // BUG TEST: ต้องได้ 400 เพราะ stock มีแค่ 1
+        // แต่ Lek ไม่เช็ค quantity vs stock
+        expect(res.status).to.equal(400);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

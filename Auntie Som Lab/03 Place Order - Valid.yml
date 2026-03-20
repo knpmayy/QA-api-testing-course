@@ -1,0 +1,42 @@
+info:
+  name: 03 Place Order - Valid
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{baseUrl}}/orders"
+  headers:
+    - name: Authorization
+      value: Bearer {{accessToken}}
+  body:
+    type: json
+    data: |-
+      {
+        "itemId": 1,
+        "quantity": 1
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        // เก็บ orderId ไว้ใช้ต่อ
+        bru.setEnvVar("orderId", res.body.orderId);
+
+        // Test: status 200
+        expect(res.status).to.equal(200);
+
+        // Test: ต้องมี orderId
+        expect(res.body.orderId).to.be.a("string");
+
+        // BUG TEST: totalPrice ต้องเท่ากับ price * quantity = 50
+        // Lek คิดราคาผิด มี -5 ลึกๆ
+        expect(res.body.totalPrice).to.equal(50);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

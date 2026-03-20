@@ -1,0 +1,36 @@
+info:
+  name: 01 Login
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/auth/login"
+  body:
+    type: json
+    data: |-
+      {
+        "username": "student",
+        "password": "hungry"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        // เก็บ token ไว้ใช้ต่อ
+        const token = res.body.accessToken;
+        bru.setEnvVar("accessToken", token);
+
+        // Test: ต้องได้ 200
+        expect(res.status).to.equal(200);
+
+        // Test: ต้องมี accessToken ใน response
+        expect(res.body.accessToken).to.be.a("string");
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
